@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:cxf="http://www.mulesoft.org/schema/mule/cxf" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns:mongo="http://www.mulesoft.org/schema/mule/mongo" xmlns:jersey="http://www.mulesoft.org/schema/mule/jersey" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:core="http://www.mulesoft.org/schema/mule/core" version="EE-3.4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/cxf http://www.mulesoft.org/schema/mule/cxf/current/mule-cxf.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.mulesoft.org/schema/mule/mongo http://www.mulesoft.org/schema/mule/mongo/2.0/mule-mongo.xsd
+http://www.mulesoft.org/schema/mule/jersey http://www.mulesoft.org/schema/mule/jersey/current/mule-jersey.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+    <mongo:config name="Mongo_DB" doc:name="Mongo DB">
+        <mongo:connection-pooling-profile initialisationPolicy="INITIALISE_ONE" exhaustedAction="WHEN_EXHAUSTED_GROW"/>
+    </mongo:config>
+    <jms:connector name="JMS1" validateConnections="true" doc:name="JMS"/>
+    <choice-exception-strategy name="global-main-exception-strategy">
+        <catch-exception-strategy doc:name="Catch Exception Strategy">
+            <custom-processor class="com.mydoublecheck.mule.csvzone.msgprocessors.ExceptionEvaluator" doc:name="ExceptionEvaluator"/>
+            <message-properties-transformer doc:name="set transacID outboundProp">
+                <add-message-property key="jobId" value="#[flowVars['jobId']]"/>
+            </message-properties-transformer>
+            <choice doc:name="Choice">
+                <when expression="#[flowVars['isRetryableException']]">
+                    <logger message="Message failed (RETRY) due to: #[exception.cause] #[exception.cause.message]" level="INFO" doc:name="Logger - Retrying"/>
+                    <vm:outbound-endpoint exchange-pattern="one-way" path="Q.Error" doc:name="VM-notify-3PS-for-Retry"/>
+                </when>
+                <otherwise>
+                    <logger message="Message failed (ABORT) due to: #[exception.cause] #[exception.cause.message]" level="ERROR" doc:name="Logger - Aborting"/>
+                    <vm:outbound-endpoint exchange-pattern="one-way" path="Q.Dlq" doc:name="VM-to-DLQ"/>
+                </otherwise>
+            </choice>
+        </catch-exception-strategy>
+    </choice-exception-strategy>
+    <flow name="get-data-from-3PS-flow" doc:name="get-data-from-3PS-flow">
+        <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" doc:name="HTTP"/>
+        <jersey:resources doc:name="REST"/>
+        <mulexml:schema-validation-filter schemaLocations="" returnResult="true" doc:name="3PS Schema Validation"/>
+        <choice doc:name="Choice">
+            <when expression="">
+                <message-properties-transformer doc:name="Set 'ACK-INVALID-Schema"/>
+            </when>
+            <otherwise>
+                <message-properties-transformer doc:name="Set 'ACK-GOOD'"/>
+            </otherwise>
+        </choice>
+        <vm:outbound-endpoint exchange-pattern="one-way" doc:name="VM-transforms"/>
+        <exception-strategy ref="" doc:name="Reference Exception Strategy"/>
+    </flow>
+    <flow name="data-transformation-flow" doc:name="data-transformation-flow">
+        <vm:inbound-endpoint exchange-pattern="one-way" doc:name="VM-transforms"/>
+        <json:json-to-object-transformer doc:name="JSON to Object (canon)"/>
+        <flow-ref name="" doc:name="Idempotent Service"/>
+        <choice doc:name="Choice">
+            <when expression="">
+                <logger level="INFO" doc:name="Log 'Already in DAX'"/>
+                <message-properties-transformer doc:name="Set Error=DUPLICATE"/>
+                <message-properties-transformer doc:name="Set DaxStep=ABORT"/>
+                <vm:outbound-endpoint exchange-pattern="one-way" doc:name="VM-error"/>
+            </when>
+            <otherwise>
+                <vm:outbound-endpoint exchange-pattern="one-way" doc:name="VM-continue"/>
+            </otherwise>
+        </choice>
+        <exception-strategy ref="" doc:name="Reference Exception Strategy"/>
+    </flow>
+    <flow name="OBSOLETE" doc:name="OBSOLETE">
+        <vm:inbound-endpoint exchange-pattern="one-way" doc:name="VM-continue"/>
+        <cxf:jaxws-service doc:name="SOAP"/>
+        <http:outbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" method="POST" doc:name="HTTP"/>
+        <message-properties-transformer doc:name="Set 'ACK-from-DAX'"/>
+        <exception-strategy ref="" doc:name="Reference Exception Strategy"/>
+    </flow>
+    <flow name="callback-flow" doc:name="callback-flow">
+        <http:inbound-endpoint exchange-pattern="one-way" host="localhost" port="8081" doc:name="HTTP"/>
+        <cxf:jaxws-service doc:name="SOAP"/>
+        <mulexml:xml-to-object-transformer doc:name="XML to Object (Response)"/>
+        <json:object-to-json-transformer doc:name="Object to JSON"/>
+        <http:outbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" method="POST" doc:name="HTTP-back-to-3PS"/>
+        <exception-strategy ref="" doc:name="Reference Exception Strategy"/>
+    </flow>
+</mule>
