@@ -3,10 +3,10 @@
 <mule xmlns:jersey="http://www.mulesoft.org/schema/mule/jersey"
 	xmlns:json="http://www.mulesoft.org/schema/mule/json"
 	xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml"
-	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:twilio="http://www.mulesoft.org/schema/mule/twilio" xmlns:cxf="http://www.mulesoft.org/schema/mule/cxf" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:smtp="http://www.mulesoft.org/schema/mule/smtp" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:core="http://www.mulesoft.org/schema/mule/core" version="EE-3.4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
-http://www.mulesoft.org/schema/mule/jersey http://www.mulesoft.org/schema/mule/jersey/current/mule-jersey.xsd 
-http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd 
-http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:twilio="http://www.mulesoft.org/schema/mule/twilio" xmlns:cxf="http://www.mulesoft.org/schema/mule/cxf" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:smtp="http://www.mulesoft.org/schema/mule/smtp" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:core="http://www.mulesoft.org/schema/mule/core" version="EE-3.4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/jersey http://www.mulesoft.org/schema/mule/jersey/current/mule-jersey.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/twilio http://www.mulesoft.org/schema/mule/twilio/1.0/mule-twilio.xsd
 http://www.mulesoft.org/schema/mule/cxf http://www.mulesoft.org/schema/mule/cxf/current/mule-cxf.xsd
@@ -14,15 +14,37 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
 http://www.mulesoft.org/schema/mule/smtp http://www.mulesoft.org/schema/mule/smtp/current/mule-smtp.xsd
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+    <choice-exception-strategy name="global-main-exception-strategy">
+        <catch-exception-strategy doc:name="Catch Exception Strategy">
+            <custom-processor class="com.mydoublecheck.mule.csvzone.msgprocessors.ExceptionEvaluator" doc:name="ExceptionEvaluator"/>
+            <message-properties-transformer doc:name="set transacID outboundProp">
+                <add-message-property key="jobId" value="#[flowVars['jobId']]"/>
+            </message-properties-transformer>
+            <choice doc:name="Choice">
+                <when expression="#[flowVars['isRetryableException']]">
+                    <logger message="Message failed (RETRY) due to: #[exception.cause] #[exception.cause.message]" level="INFO" doc:name="Logger - Retrying"/>
+                    <vm:outbound-endpoint exchange-pattern="one-way" path="Q.retry" doc:name="VM-retry"/>
+                </when>
+                <when expression="">
+                    <logger level="INFO" doc:name="Logger - Abort (error in clean up should not recurse)"/>
+                    <vm:outbound-endpoint exchange-pattern="one-way"  doc:name="VM - DLQ" path="Q.dlq"/>
+                </when>
+                <otherwise>
+                    <logger message="Message failed (ABORT) due to: #[exception.cause] #[exception.cause.message]" level="ERROR" doc:name="Logger - Error (for non-retryable issues)"/>
+                    <vm:outbound-endpoint exchange-pattern="one-way" path="Q.Dlq" doc:name="VM-error"/>
+                </otherwise>
+            </choice>
+        </catch-exception-strategy>
+    </choice-exception-strategy>
     <flow name="send-data-to-DAX-flow" doc:name="send-data-to-DAX-flow">
-        <vm:inbound-endpoint exchange-pattern="one-way" doc:name="VM-continue"/>
+        <vm:inbound-endpoint exchange-pattern="one-way" doc:name="VM-continue" path="Q.continue"/>
         <logger level="INFO" doc:name="Log Orchestration startTime"/>
         <tracking:custom-event event-name="" doc:name="bizEvent: OrchestrationStartTime"/>
         <message-properties-transformer doc:name="set DaxStep=1"/>
-        <vm:outbound-endpoint exchange-pattern="one-way" doc:name="VM-step1"/>
+        <vm:outbound-endpoint exchange-pattern="one-way" doc:name="VM-step1" path="Q.step1"/>
     </flow>
     <flow name="DAX-step1-flow" doc:name="DAX-step1-flow">
-        <vm:inbound-endpoint exchange-pattern="one-way" doc:name="VM-step1"/>
+        <vm:inbound-endpoint exchange-pattern="one-way" doc:name="VM-step1" path="Q.step1"/>
         <custom-transformer class="" doc:name="Canon-to-CompanyRequest"/>
         <enricher doc:name="Enricher - Company svc">
             <cxf:jaxws-service doc:name="SOAP"/>
@@ -34,17 +56,17 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
             <when expression="">
                 <logger level="INFO" doc:name="step1-error"/>
                 <custom-transformer class="" doc:name="Enrich-Canonical-w-Error-specifics"/>
-                <vm:outbound-endpoint exchange-pattern="one-way" doc:name="VM-error"/>
+                <vm:outbound-endpoint exchange-pattern="one-way" doc:name="VM-error" path="Q.error"/>
             </when>
             <otherwise>
                 <logger level="INFO" doc:name="step1-success"/>
                 <message-properties-transformer doc:name="set DaxStep=2"/>
-                <vm:outbound-endpoint exchange-pattern="one-way" doc:name="VM-step2"/>
+                <vm:outbound-endpoint exchange-pattern="one-way" doc:name="VM-step2" path="Q.step2"/>
             </otherwise>
         </choice>
     </flow>
     <flow name="DAX-step2-flow" doc:name="DAX-step2-flow">
-        <vm:inbound-endpoint exchange-pattern="one-way" doc:name="VM-step2"/>
+        <vm:inbound-endpoint exchange-pattern="one-way" doc:name="VM-step2" path="Q.step2"/>
         <custom-transformer class="" doc:name="Canon-to-DivisionRequest"/>
         <enricher doc:name="Enricher - Division svc">
             <cxf:jaxws-service doc:name="SOAP"/>
@@ -56,12 +78,12 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
             <when expression="">
                 <logger level="INFO" doc:name="step2-error"/>
                 <custom-transformer class="" doc:name="Enrich-Canonical-w-Error-specifics"/>
-                <vm:outbound-endpoint exchange-pattern="one-way" doc:name="VM-error"/>
+                <vm:outbound-endpoint exchange-pattern="one-way" doc:name="VM-error" path="Q.error"/>
             </when>
             <otherwise>
                 <logger level="INFO" doc:name="step2-success"/>
                 <message-properties-transformer doc:name="set DaxStep=3"/>
-                <vm:outbound-endpoint exchange-pattern="one-way" doc:name="VM-step3"/>
+                <vm:outbound-endpoint exchange-pattern="one-way" doc:name="VM-step3" path="Q.step3"/>
             </otherwise>
         </choice>
     </flow>
@@ -69,7 +91,7 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
         <logger level="INFO" doc:name="..."/>
     </flow>
     <flow name="DAX-step7-flow" doc:name="DAX-step7-flow">
-        <vm:inbound-endpoint exchange-pattern="one-way" doc:name="VM-step8"/>
+        <vm:inbound-endpoint exchange-pattern="one-way" doc:name="VM-step8" path="Q.step8"/>
         <custom-transformer class="" doc:name="Canon-to-VendorRequest"/>
         <enricher doc:name="Enricher - Vendor svc">
             <cxf:jaxws-service doc:name="SOAP"/>
@@ -81,17 +103,17 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
             <when expression="">
                 <logger level="INFO" doc:name="step7-error"/>
                 <custom-transformer class="" doc:name="Enrich-Canonical-w-Error-specifics"/>
-                <vm:outbound-endpoint exchange-pattern="one-way" doc:name="VM-error"/>
+                <vm:outbound-endpoint exchange-pattern="one-way" doc:name="VM-error" path="Q.error"/>
             </when>
             <otherwise>
                 <logger level="INFO" doc:name="step7-success"/>
                 <message-properties-transformer doc:name="set DaxStep=8"/>
-                <vm:outbound-endpoint exchange-pattern="one-way" doc:name="VM-step8"/>
+                <vm:outbound-endpoint exchange-pattern="one-way" doc:name="VM-step8" path="Q.step8"/>
             </otherwise>
         </choice>
     </flow>
     <flow name="SetupComplete" doc:name="SetupComplete">
-        <vm:inbound-endpoint exchange-pattern="one-way" doc:name="VM-step8"/>
+        <vm:inbound-endpoint exchange-pattern="one-way" doc:name="VM-step8" path="Q.step8"/>
         <enricher doc:name="Enricher - Setup Complete svc">
             <cxf:jaxws-service doc:name="SOAP"/>
             <http:outbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" method="POST" doc:name="HTTP"/>
@@ -99,23 +121,63 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
         <choice doc:name="Choice">
             <when expression="">
                 <logger level="INFO" doc:name="Log SetupComplete Failure"/>
-                <vm:outbound-endpoint exchange-pattern="one-way" doc:name="VM-error"/>
+                <vm:outbound-endpoint exchange-pattern="one-way" doc:name="VM-error" path="Q.error"/>
             </when>
             <otherwise>
                 <logger level="INFO" doc:name="Log SetupComplete Success"/>
                 <expression-transformer doc:name="set DaxStep=Complete"/>
-                <vm:outbound-endpoint exchange-pattern="one-way" doc:name="VM-callback-3PS"/>
+                <vm:outbound-endpoint exchange-pattern="one-way" doc:name="VM-callback-3PS" path="Q.callback"/>
             </otherwise>
         </choice>
     </flow>
     <flow name="DAX-error-flow" doc:name="DAX-error-flow">
-        <vm:inbound-endpoint exchange-pattern="one-way" doc:name="VM-error"/>
+        <vm:inbound-endpoint exchange-pattern="one-way" doc:name="VM-error" path="Q.error"/>
         <flow-ref name="" doc:name="Notify Ops"/>
         <logger level="INFO" doc:name="Log Error, failing step &amp; 3PS entityID"/>
-        <vm:outbound-endpoint exchange-pattern="one-way" doc:name="VM-DAX-cleanup"/>
+        <vm:outbound-endpoint exchange-pattern="one-way" doc:name="VM-DAX-cleanup" path="Q.cleanup"/>
     </flow>
+    <flow name="DAX-retry-flow" doc:name="DAX-retry-flow">
+        <vm:inbound-endpoint exchange-pattern="one-way" responseTimeout="" doc:name="VM"/>
+        <logger level="INFO" doc:name="TO BE IMPLEMENTED..."/>
+        <logger level="INFO" doc:name="determine what step is to be retried"/>
+        <choice doc:name="Choice">    
+            <when expression="">
+                <vm:outbound-endpoint exchange-pattern="one-way" responseTimeout="" doc:name="VM-retry-step1"/>
+            </when>            
+            <when expression="">
+                <vm:outbound-endpoint exchange-pattern="one-way" responseTimeout="" doc:name="VM-retry-step2"/>
+            </when>
+            <when expression="">
+                <vm:outbound-endpoint exchange-pattern="one-way" responseTimeout="" doc:name="VM-retry-step3"/>
+            </when>
+            <when expression="">
+                <vm:outbound-endpoint exchange-pattern="one-way" responseTimeout="" doc:name="VM-retry-step4"/>
+            </when>
+            <when expression="">
+                <vm:outbound-endpoint exchange-pattern="one-way" responseTimeout="" doc:name="VM-retry-step5"/>
+            </when>
+            <when expression="">
+                <vm:outbound-endpoint exchange-pattern="one-way" responseTimeout="" doc:name="VM-retry-step6"/>
+            </when>
+            <when expression="">
+                <vm:outbound-endpoint exchange-pattern="one-way" responseTimeout="" doc:name="VM-retry-step7"/>
+            </when>
+            <when expression="">
+                <vm:outbound-endpoint exchange-pattern="one-way" responseTimeout="" doc:name="VM-retry-setupComplete"/>
+            </when>
+            <otherwise>
+                <vm:outbound-endpoint exchange-pattern="one-way" responseTimeout="" doc:name="VM-retry-cleanup"/>
+            </otherwise>
+        </choice>
+    </flow>
+    <flow name="DAX-DLQ-flow" doc:name="DAX-DLQ-flow">
+        <vm:inbound-endpoint exchange-pattern="one-way" doc:name="VM-DLQ" path="Q.dlq"/>
+        <flow-ref name="" doc:name="Notify Ops"/>
+        <logger level="INFO" doc:name="ABORT log: avoiding circular references when/if cleanup fails"/>
+        <tracking:custom-event event-name="" doc:name="bizEvent: ABORT (unable to cleanup)"/>
+    </flow>    
     <flow name="DAX-cleanup-flow" doc:name="DAX-cleanup-flow">
-        <vm:inbound-endpoint exchange-pattern="one-way" doc:name="VM-DAX-cleanup"/>
+        <vm:inbound-endpoint exchange-pattern="one-way" doc:name="VM-DAX-cleanup" path="Q.cleanup"/>
         <custom-transformer class="" doc:name="Canon-to-CleanupRequest"/>
         <enricher doc:name="Enricher - DAX CleanUp svc">
             <cxf:jaxws-service doc:name="SOAP"/>
@@ -130,27 +192,27 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
                     <when expression="">
                         <message-properties-transformer doc:name="set DaxStep=ABORT"/>
                         <flow-ref name="" doc:name="Notify Ops - ABORT"/>
-                        <vm:outbound-endpoint exchange-pattern="one-way" doc:name="VM-report-error-to-3PS"/>
+                        <vm:outbound-endpoint exchange-pattern="one-way" doc:name="VM-report-error-to-3PS" path="Q.errorReportTo3PS"/>
                     </when>
                     <otherwise>
                         <message-properties-transformer doc:name="set DaxStep=RETRY"/>
                         <flow-ref name="" doc:name="Notify Ops - RETRY"/>
                         <expression-component doc:name="manage - Retry Count"/>
-                        <vm:outbound-endpoint exchange-pattern="one-way" doc:name="VM-DAX-cleanup (recurse)"/>
+                        <vm:outbound-endpoint exchange-pattern="one-way" doc:name="VM-DAX-cleanup (recurse)" path="Q.cleanup"/>
                     </otherwise>
                 </choice>
             </when>
             <otherwise>
                 <logger level="INFO" doc:name="CleanUp-success"/>
                 <logger level="INFO" doc:name="report error to 3PS"/>
-                <vm:outbound-endpoint exchange-pattern="one-way" doc:name="VM-reportError-to-3PS"/>
+                <vm:outbound-endpoint exchange-pattern="one-way" doc:name="VM-reportError-to-3PS" path="Q.errorReportTo3PS"/>
             </otherwise>
         </choice>
     </flow>
     <flow name="3PS-Callback" doc:name="3PS-Callback">
         <composite-source doc:name="Composite Source">
-            <vm:inbound-endpoint exchange-pattern="one-way" doc:name="VM-callback-3PS"/>
-            <vm:inbound-endpoint exchange-pattern="one-way" doc:name="VM-reportError-to-3PS"/>
+            <vm:inbound-endpoint exchange-pattern="one-way" doc:name="VM-callback-3PS" path="Q.callback"/>
+            <vm:inbound-endpoint exchange-pattern="one-way" doc:name="VM-reportError-to-3PS" path="Q.errorReportTo3PS"/>
         </composite-source>
         <enricher doc:name="Enricher - GET-3PS-JSON">
             <http:outbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" method="POST" doc:name="HTTP-GET"/>
@@ -164,7 +226,7 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
         <choice doc:name="Choice">
             <when expression="">
                 <logger level="INFO" doc:name="ERROR on 3PS Update"/>
-                <vm:outbound-endpoint exchange-pattern="one-way" doc:name="VM-Error"/>
+                <vm:outbound-endpoint exchange-pattern="one-way" doc:name="VM-Error" path="Q.error"/>
             </when>
             <otherwise>
                 <logger level="INFO" doc:name="SUCCESS: Log Orchestration endTime"/>
@@ -179,25 +241,6 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
             <twilio:add-incoming-phone-number-by-area-code config-ref="" areaCode="" doc:name="Twilio"/>
         </all>
     </flow>
-    <flow name="mule-DAX-orchestrationFlow1" doc:name="mule-DAX-orchestrationFlow1"/>
-    <choice-exception-strategy name="global-main-exception-strategy">
-        <catch-exception-strategy doc:name="Catch Exception Strategy">
-            <custom-processor class="com.mydoublecheck.mule.csvzone.msgprocessors.ExceptionEvaluator" doc:name="ExceptionEvaluator"/>
-            <message-properties-transformer doc:name="set transacID outboundProp">
-                <add-message-property key="jobId" value="#[flowVars['jobId']]"/>
-            </message-properties-transformer>
-            <choice doc:name="Choice">
-                <when expression="#[flowVars['isRetryableException']]">
-                    <logger message="Message failed (RETRY) due to: #[exception.cause] #[exception.cause.message]" level="INFO" doc:name="Logger - Retrying"/>
-                    <vm:outbound-endpoint exchange-pattern="one-way" path="Q.Error" doc:name="VM-notify-3PS-for-Retry"/>
-                </when>
-                <otherwise>
-                    <logger message="Message failed (ABORT) due to: #[exception.cause] #[exception.cause.message]" level="ERROR" doc:name="Logger - Aborting"/>
-                    <vm:outbound-endpoint exchange-pattern="one-way" path="Q.Dlq" doc:name="VM-to-DLQ"/>
-                </otherwise>
-            </choice>
-        </catch-exception-strategy>
-    </choice-exception-strategy>
     <flow name="get-data-from-3PS-flow" doc:name="get-data-from-3PS-flow">
         <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" doc:name="HTTP"/>
         <jersey:resources doc:name="REST"/>
@@ -210,11 +253,11 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
                 <message-properties-transformer doc:name="Set 'ACK-GOOD'"/>
             </otherwise>
         </choice>
-        <vm:outbound-endpoint exchange-pattern="one-way" doc:name="VM-transforms"/>
+        <vm:outbound-endpoint exchange-pattern="one-way" doc:name="VM-transforms" path="Q.transform"/>
         <exception-strategy ref="" doc:name="Reference Exception Strategy"/>
     </flow>
     <flow name="data-transformation-flow" doc:name="data-transformation-flow">
-        <vm:inbound-endpoint exchange-pattern="one-way" doc:name="VM-transforms"/>
+        <vm:inbound-endpoint exchange-pattern="one-way" doc:name="VM-transforms" path="Q.transform"/>
         <json:json-to-object-transformer doc:name="JSON to Object (canon)"/>
         <flow-ref name="" doc:name="Idempotent Service"/>
         <choice doc:name="Choice">
@@ -222,27 +265,13 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
                 <logger level="INFO" doc:name="Log 'Already in DAX'"/>
                 <message-properties-transformer doc:name="Set Error=DUPLICATE"/>
                 <message-properties-transformer doc:name="Set DaxStep=ABORT"/>
-                <vm:outbound-endpoint exchange-pattern="one-way" doc:name="VM-error"/>
+                <vm:outbound-endpoint exchange-pattern="one-way" doc:name="VM-error" path="Q.error"/>
             </when>
             <otherwise>
-                <vm:outbound-endpoint exchange-pattern="one-way" doc:name="VM-continue"/>
+                <vm:outbound-endpoint exchange-pattern="one-way" doc:name="VM-continue" path="Q.continue"/>
             </otherwise>
         </choice>
         <exception-strategy ref="" doc:name="Reference Exception Strategy"/>
     </flow>
-    <flow name="OBSOLETE" doc:name="OBSOLETE">
-        <vm:inbound-endpoint exchange-pattern="one-way" doc:name="VM-continue"/>
-        <cxf:jaxws-service doc:name="SOAP"/>
-        <http:outbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" method="POST" doc:name="HTTP"/>
-        <message-properties-transformer doc:name="Set 'ACK-from-DAX'"/>
-        <exception-strategy ref="" doc:name="Reference Exception Strategy"/>
-    </flow>
-    <flow name="callback-flow" doc:name="callback-flow">
-        <http:inbound-endpoint exchange-pattern="one-way" host="localhost" port="8081" doc:name="HTTP"/>
-        <cxf:jaxws-service doc:name="SOAP"/>
-        <mulexml:xml-to-object-transformer doc:name="XML to Object (Response)"/>
-        <json:object-to-json-transformer doc:name="Object to JSON"/>
-        <http:outbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" method="POST" doc:name="HTTP-back-to-3PS"/>
-        <exception-strategy ref="" doc:name="Reference Exception Strategy"/>
-    </flow>    
+    
 </mule>
