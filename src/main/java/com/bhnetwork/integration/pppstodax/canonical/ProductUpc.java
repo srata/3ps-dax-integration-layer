@@ -2,7 +2,16 @@ package com.bhnetwork.integration.pppstodax.canonical;
 
 import java.util.Date;
 
-public class Product {
+/**
+ * 
+ * BHN Integration canonical model for Product/Upc
+ * per spec 3.3, doc ref: MasterDataGapAnalysisGROUP 3PS v 3_3 .xlsx 
+ * 
+ * @author Stephane Rata - Got SOA?
+ *
+ */
+
+public class ProductUpc {
 	// everything bhn... is DAX internal specific and may be not exposed on the json
 	private String	bhnBarcodeType;
 	private String	bhnCheckDigit;

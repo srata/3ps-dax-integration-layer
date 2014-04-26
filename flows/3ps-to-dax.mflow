@@ -36,6 +36,7 @@
     <property value="4" name="auxiliary;index"/>
     <property-collection name="@http://www.mulesoft.org/schema/mule/core/add-message-property;0">
         <property value="#[flowVars['jobId']]" name="value"/>
+        <property value="true" name="isProcessed$$$$"/>
         <property value="jobId" name="key"/>
         <property value="5" name="auxiliary;index"/>
         <property value="5" name="auxiliary;wrapIn"/>
@@ -45,26 +46,47 @@
                             <splitter index="6" type="org.mule.tooling.ui.modules.core.pattern.cbr" name="Choice" entity-id="Choice#1">
 <graphicalData height="0" width="0" y="0" x="0"/>
 <properties>
-    <property-collection name="f05a9c7e-4972-458f-988a-dde69d509c23">
-        <property value="" name="choice.expression"/>
-        <property-collection name="choice.attributes">
-            <property value="" name="expression"/>
-        </property-collection>
-    </property-collection>
-    <property-collection name="021ab423-be8f-4929-8473-a1121ca063a4">
+    <property value="6" name=";INDEX"/>
+    <property-collection name="a00ec659-ee9a-4a25-9eff-c3810c4d5d36">
         <property value="true" name="choice.otherwise"/>
         <property-collection name="choice.attributes"/>
     </property-collection>
-    <property-collection name="02955bda-a2ab-4527-9560-7d0bfa8dbe13">
+    <property-collection name="b8d07d41-1791-4864-92ea-0c9e807d8cde">
         <property value="#[flowVars['isRetryableException']]" name="choice.expression"/>
         <property-collection name="choice.attributes">
             <property value="#[flowVars['isRetryableException']]" name="expression"/>
         </property-collection>
     </property-collection>
+    <property-collection name="af839d3c-dc3e-4589-bacc-48b3ac9fc5e5">
+        <property value="" name="choice.expression"/>
+        <property-collection name="choice.attributes">
+            <property value="" name="expression"/>
+        </property-collection>
+    </property-collection>
 </properties>
-<pattern type="org.mule.tooling.ui.modules.core.pattern.cbr" name="Choice" entity-id="Choice#2"/>
+<pattern type="org.mule.tooling.ui.modules.core.pattern.cbr" name="Choice" entity-id="Choice#2">
+    <properties>
+        <property value="6" name=";INDEX"/>
+        <property-collection name="a00ec659-ee9a-4a25-9eff-c3810c4d5d36">
+            <property value="true" name="choice.otherwise"/>
+            <property-collection name="choice.attributes"/>
+        </property-collection>
+        <property-collection name="b8d07d41-1791-4864-92ea-0c9e807d8cde">
+            <property value="#[flowVars['isRetryableException']]" name="choice.expression"/>
+            <property-collection name="choice.attributes">
+                <property value="#[flowVars['isRetryableException']]" name="expression"/>
+            </property-collection>
+        </property-collection>
+        <property-collection name="af839d3c-dc3e-4589-bacc-48b3ac9fc5e5">
+            <property value="" name="choice.expression"/>
+            <property-collection name="choice.attributes">
+                <property value="" name="expression"/>
+            </property-collection>
+        </property-collection>
+    </properties>
+</pattern>
 <compartment entity-id="compartment#2">
-    <lane isChoiceOtherwiseLane="false" index="8" hadOnlyOneElement="false" entity-id="02955bda-a2ab-4527-9560-7d0bfa8dbe13">
+    <lane isChoiceOtherwiseLane="false" index="8" hadOnlyOneElement="false" entity-id="b8d07d41-1791-4864-92ea-0c9e807d8cde">
         <pattern type="http://www.mulesoft.org/schema/mule/core/logger" name="Logger - Retrying" entity-id="Logger#1">
             <graphicalData height="0" width="0" y="0" x="0"/>
             <properties>
@@ -94,7 +116,7 @@
             </properties>
         </endpoint>
     </lane>
-    <lane isChoiceOtherwiseLane="false" index="11" hadOnlyOneElement="false" entity-id="f05a9c7e-4972-458f-988a-dde69d509c23">
+    <lane isChoiceOtherwiseLane="false" index="11" hadOnlyOneElement="false" entity-id="af839d3c-dc3e-4589-bacc-48b3ac9fc5e5">
         <pattern type="http://www.mulesoft.org/schema/mule/core/logger" name="Logger - Abort (error in clean up should not recurse)" entity-id="Logger#2">
             <graphicalData height="0" width="0" y="0" x="0"/>
             <properties>
@@ -124,7 +146,7 @@
             </properties>
         </endpoint>
     </lane>
-    <lane isChoiceOtherwiseLane="true" index="14" hadOnlyOneElement="false" entity-id="021ab423-be8f-4929-8473-a1121ca063a4">
+    <lane isChoiceOtherwiseLane="true" index="14" hadOnlyOneElement="false" entity-id="a00ec659-ee9a-4a25-9eff-c3810c4d5d36">
         <pattern type="http://www.mulesoft.org/schema/mule/core/logger" name="Logger - Error (for non-retryable issues)" entity-id="Logger#3">
             <graphicalData height="0" width="0" y="0" x="0"/>
             <properties>
@@ -162,7 +184,7 @@
             </lane>
         </compartment>
     </global-element>
-    <flow SubFlow="false" name="send-data-to-DAX-flow" entity-id="4b5dd731-8c8c-4905-b4cc-4e13b23ce060">
+    <flow SubFlow="false" name="send-data-to-DAX-flow" entity-id="f4e3b03b-9e63-412a-a8c4-044b227eb0df">
         <properties>
             <property name="processingStrategy"/>
             <property name="processingStrategy2"/>
@@ -240,7 +262,7 @@
             </endpoint>
         </lane>
     </flow>
-    <flow SubFlow="false" name="DAX-step1-flow" entity-id="63cc3ea9-6f04-4e3b-b277-f76071bbe536">
+    <flow SubFlow="false" name="DAX-step1-flow" entity-id="c6d1b846-f391-4852-8f55-1b670852ab83">
         <properties>
             <property name="processingStrategy"/>
             <property name="processingStrategy2"/>
@@ -363,20 +385,35 @@
             <splitter index="30" type="org.mule.tooling.ui.modules.core.pattern.cbr" name="Choice" entity-id="Choice#3">
                 <graphicalData height="0" width="0" y="0" x="0"/>
                 <properties>
-                    <property-collection name="dd755dd9-89f3-4c34-bac2-bb8a9826ea29">
+                    <property value="30" name=";INDEX"/>
+                    <property-collection name="ddf71932-0d8f-43a8-99e2-4a8482c41caa">
                         <property value="true" name="choice.otherwise"/>
                         <property-collection name="choice.attributes"/>
                     </property-collection>
-                    <property-collection name="3d2579a8-9d1c-4a60-af0c-c4c90f3cd02b">
+                    <property-collection name="b51f60f6-79cf-400a-9f1d-6a14ffa73d8e">
                         <property value="" name="choice.expression"/>
                         <property-collection name="choice.attributes">
                             <property value="" name="expression"/>
                         </property-collection>
                     </property-collection>
                 </properties>
-                <pattern type="org.mule.tooling.ui.modules.core.pattern.cbr" name="Choice" entity-id="Choice#4"/>
+                <pattern type="org.mule.tooling.ui.modules.core.pattern.cbr" name="Choice" entity-id="Choice#4">
+                    <properties>
+                        <property value="30" name=";INDEX"/>
+                        <property-collection name="ddf71932-0d8f-43a8-99e2-4a8482c41caa">
+                            <property value="true" name="choice.otherwise"/>
+                            <property-collection name="choice.attributes"/>
+                        </property-collection>
+                        <property-collection name="b51f60f6-79cf-400a-9f1d-6a14ffa73d8e">
+                            <property value="" name="choice.expression"/>
+                            <property-collection name="choice.attributes">
+<property value="" name="expression"/>
+                            </property-collection>
+                        </property-collection>
+                    </properties>
+                </pattern>
                 <compartment entity-id="compartment#4">
-                    <lane isChoiceOtherwiseLane="false" index="32" hadOnlyOneElement="false" entity-id="3d2579a8-9d1c-4a60-af0c-c4c90f3cd02b">
+                    <lane isChoiceOtherwiseLane="false" index="32" hadOnlyOneElement="false" entity-id="b51f60f6-79cf-400a-9f1d-6a14ffa73d8e">
                         <pattern type="http://www.mulesoft.org/schema/mule/core/logger" name="step1-error" entity-id="Logger#6">
                             <graphicalData height="0" width="0" y="0" x="0"/>
                             <properties>
@@ -417,7 +454,7 @@
                             </properties>
                         </endpoint>
                     </lane>
-                    <lane isChoiceOtherwiseLane="true" index="36" hadOnlyOneElement="false" entity-id="dd755dd9-89f3-4c34-bac2-bb8a9826ea29">
+                    <lane isChoiceOtherwiseLane="true" index="36" hadOnlyOneElement="false" entity-id="ddf71932-0d8f-43a8-99e2-4a8482c41caa">
                         <pattern type="http://www.mulesoft.org/schema/mule/core/logger" name="step1-success" entity-id="Logger#7">
                             <graphicalData height="0" width="0" y="0" x="0"/>
                             <properties>
@@ -463,7 +500,7 @@
             </splitter>
         </lane>
     </flow>
-    <flow SubFlow="false" name="DAX-step2-flow" entity-id="dcb1e93a-7527-4f1a-9d77-36cbaaaf3b0c">
+    <flow SubFlow="false" name="DAX-step2-flow" entity-id="4ed3d6c5-05bb-4200-8899-c910002394c2">
         <properties>
             <property name="processingStrategy"/>
             <property name="processingStrategy2"/>
@@ -586,20 +623,35 @@
             <splitter index="47" type="org.mule.tooling.ui.modules.core.pattern.cbr" name="Choice" entity-id="Choice#5">
                 <graphicalData height="0" width="0" y="0" x="0"/>
                 <properties>
-                    <property-collection name="b1649d96-a4ef-46ad-b357-e97ac4af8c65">
+                    <property value="47" name=";INDEX"/>
+                    <property-collection name="4f5cbdd1-90ac-4831-9df4-0aa00834eaba">
                         <property value="" name="choice.expression"/>
                         <property-collection name="choice.attributes">
                             <property value="" name="expression"/>
                         </property-collection>
                     </property-collection>
-                    <property-collection name="fb7fc400-2ed5-4ae8-9d13-03ae184a34e1">
+                    <property-collection name="470f8117-dc8c-4c60-aea2-8774c2b96d8c">
                         <property value="true" name="choice.otherwise"/>
                         <property-collection name="choice.attributes"/>
                     </property-collection>
                 </properties>
-                <pattern type="org.mule.tooling.ui.modules.core.pattern.cbr" name="Choice" entity-id="Choice#6"/>
+                <pattern type="org.mule.tooling.ui.modules.core.pattern.cbr" name="Choice" entity-id="Choice#6">
+                    <properties>
+                        <property value="47" name=";INDEX"/>
+                        <property-collection name="4f5cbdd1-90ac-4831-9df4-0aa00834eaba">
+                            <property value="" name="choice.expression"/>
+                            <property-collection name="choice.attributes">
+<property value="" name="expression"/>
+                            </property-collection>
+                        </property-collection>
+                        <property-collection name="470f8117-dc8c-4c60-aea2-8774c2b96d8c">
+                            <property value="true" name="choice.otherwise"/>
+                            <property-collection name="choice.attributes"/>
+                        </property-collection>
+                    </properties>
+                </pattern>
                 <compartment entity-id="compartment#6">
-                    <lane isChoiceOtherwiseLane="false" index="49" hadOnlyOneElement="false" entity-id="b1649d96-a4ef-46ad-b357-e97ac4af8c65">
+                    <lane isChoiceOtherwiseLane="false" index="49" hadOnlyOneElement="false" entity-id="4f5cbdd1-90ac-4831-9df4-0aa00834eaba">
                         <pattern type="http://www.mulesoft.org/schema/mule/core/logger" name="step2-error" entity-id="Logger#9">
                             <graphicalData height="0" width="0" y="0" x="0"/>
                             <properties>
@@ -640,7 +692,7 @@
                             </properties>
                         </endpoint>
                     </lane>
-                    <lane isChoiceOtherwiseLane="true" index="53" hadOnlyOneElement="false" entity-id="fb7fc400-2ed5-4ae8-9d13-03ae184a34e1">
+                    <lane isChoiceOtherwiseLane="true" index="53" hadOnlyOneElement="false" entity-id="470f8117-dc8c-4c60-aea2-8774c2b96d8c">
                         <pattern type="http://www.mulesoft.org/schema/mule/core/logger" name="step2-success" entity-id="Logger#10">
                             <graphicalData height="0" width="0" y="0" x="0"/>
                             <properties>
@@ -686,7 +738,7 @@
             </splitter>
         </lane>
     </flow>
-    <flow SubFlow="false" name="do-the-same-for-step3-to-step6" entity-id="21559e15-c40b-4b06-8b26-a03331f6676b">
+    <flow SubFlow="false" name="do-the-same-for-step3-to-step6" entity-id="0e6adda8-7730-4ecc-aa4c-2f5dfafb46d9">
         <properties>
             <property name="processingStrategy"/>
             <property name="processingStrategy2"/>
@@ -707,7 +759,7 @@
             </pattern>
         </lane>
     </flow>
-    <flow SubFlow="false" name="DAX-step7-flow" entity-id="5abee881-57af-4bec-a031-982d5ec9503b">
+    <flow SubFlow="false" name="DAX-step7-flow" entity-id="bc700b81-5f7a-4f4f-b9f9-acbdbd1c05c8">
         <properties>
             <property name="processingStrategy"/>
             <property name="processingStrategy2"/>
@@ -830,20 +882,35 @@
             <splitter index="66" type="org.mule.tooling.ui.modules.core.pattern.cbr" name="Choice" entity-id="Choice#7">
                 <graphicalData height="0" width="0" y="0" x="0"/>
                 <properties>
-                    <property-collection name="cc7c2322-24c0-4051-b84f-67c2e1c2fc91">
+                    <property value="66" name=";INDEX"/>
+                    <property-collection name="a4c819ea-80aa-48d0-a0fe-ae85f89f6ab1">
+                        <property value="true" name="choice.otherwise"/>
+                        <property-collection name="choice.attributes"/>
+                    </property-collection>
+                    <property-collection name="205c12d4-c614-47ce-9da0-a606fbdc3ce2">
                         <property value="" name="choice.expression"/>
                         <property-collection name="choice.attributes">
                             <property value="" name="expression"/>
                         </property-collection>
                     </property-collection>
-                    <property-collection name="361192c0-f889-4918-b730-eb0f89510d76">
-                        <property value="true" name="choice.otherwise"/>
-                        <property-collection name="choice.attributes"/>
-                    </property-collection>
                 </properties>
-                <pattern type="org.mule.tooling.ui.modules.core.pattern.cbr" name="Choice" entity-id="Choice#8"/>
+                <pattern type="org.mule.tooling.ui.modules.core.pattern.cbr" name="Choice" entity-id="Choice#8">
+                    <properties>
+                        <property value="66" name=";INDEX"/>
+                        <property-collection name="a4c819ea-80aa-48d0-a0fe-ae85f89f6ab1">
+                            <property value="true" name="choice.otherwise"/>
+                            <property-collection name="choice.attributes"/>
+                        </property-collection>
+                        <property-collection name="205c12d4-c614-47ce-9da0-a606fbdc3ce2">
+                            <property value="" name="choice.expression"/>
+                            <property-collection name="choice.attributes">
+<property value="" name="expression"/>
+                            </property-collection>
+                        </property-collection>
+                    </properties>
+                </pattern>
                 <compartment entity-id="compartment#8">
-                    <lane isChoiceOtherwiseLane="false" index="68" hadOnlyOneElement="false" entity-id="cc7c2322-24c0-4051-b84f-67c2e1c2fc91">
+                    <lane isChoiceOtherwiseLane="false" index="68" hadOnlyOneElement="false" entity-id="205c12d4-c614-47ce-9da0-a606fbdc3ce2">
                         <pattern type="http://www.mulesoft.org/schema/mule/core/logger" name="step7-error" entity-id="Logger#13">
                             <graphicalData height="0" width="0" y="0" x="0"/>
                             <properties>
@@ -884,7 +951,7 @@
                             </properties>
                         </endpoint>
                     </lane>
-                    <lane isChoiceOtherwiseLane="true" index="72" hadOnlyOneElement="false" entity-id="361192c0-f889-4918-b730-eb0f89510d76">
+                    <lane isChoiceOtherwiseLane="true" index="72" hadOnlyOneElement="false" entity-id="a4c819ea-80aa-48d0-a0fe-ae85f89f6ab1">
                         <pattern type="http://www.mulesoft.org/schema/mule/core/logger" name="step7-success" entity-id="Logger#14">
                             <graphicalData height="0" width="0" y="0" x="0"/>
                             <properties>
@@ -930,7 +997,7 @@
             </splitter>
         </lane>
     </flow>
-    <flow SubFlow="false" name="SetupComplete" entity-id="b5b72706-7af1-4624-8983-bccb1203bd15">
+    <flow SubFlow="false" name="SetupComplete" entity-id="cd48f1f0-e7da-4615-82bb-c0cacfda7bcc">
         <properties>
             <property name="processingStrategy"/>
             <property name="processingStrategy2"/>
@@ -1022,20 +1089,35 @@
             <splitter index="80" type="org.mule.tooling.ui.modules.core.pattern.cbr" name="Choice" entity-id="Choice#9">
                 <graphicalData height="0" width="0" y="0" x="0"/>
                 <properties>
-                    <property-collection name="da2cc665-ddef-42e8-b931-60b618f14873">
+                    <property value="80" name=";INDEX"/>
+                    <property-collection name="604460c3-b40c-46d6-8c51-e4e903dbadc9">
                         <property value="" name="choice.expression"/>
                         <property-collection name="choice.attributes">
                             <property value="" name="expression"/>
                         </property-collection>
                     </property-collection>
-                    <property-collection name="e7e3e18b-0e7e-4761-84e3-c68a04de42ee">
+                    <property-collection name="74a53b42-3d5d-43fe-a997-65ebb5879b7f">
                         <property value="true" name="choice.otherwise"/>
                         <property-collection name="choice.attributes"/>
                     </property-collection>
                 </properties>
-                <pattern type="org.mule.tooling.ui.modules.core.pattern.cbr" name="Choice" entity-id="Choice#10"/>
+                <pattern type="org.mule.tooling.ui.modules.core.pattern.cbr" name="Choice" entity-id="Choice#10">
+                    <properties>
+                        <property value="80" name=";INDEX"/>
+                        <property-collection name="604460c3-b40c-46d6-8c51-e4e903dbadc9">
+                            <property value="" name="choice.expression"/>
+                            <property-collection name="choice.attributes">
+<property value="" name="expression"/>
+                            </property-collection>
+                        </property-collection>
+                        <property-collection name="74a53b42-3d5d-43fe-a997-65ebb5879b7f">
+                            <property value="true" name="choice.otherwise"/>
+                            <property-collection name="choice.attributes"/>
+                        </property-collection>
+                    </properties>
+                </pattern>
                 <compartment entity-id="compartment#10">
-                    <lane isChoiceOtherwiseLane="false" index="82" hadOnlyOneElement="false" entity-id="da2cc665-ddef-42e8-b931-60b618f14873">
+                    <lane isChoiceOtherwiseLane="false" index="82" hadOnlyOneElement="false" entity-id="604460c3-b40c-46d6-8c51-e4e903dbadc9">
                         <pattern type="http://www.mulesoft.org/schema/mule/core/logger" name="Log SetupComplete Failure" entity-id="Logger#15">
                             <graphicalData height="0" width="0" y="0" x="0"/>
                             <properties>
@@ -1065,7 +1147,7 @@
                             </properties>
                         </endpoint>
                     </lane>
-                    <lane isChoiceOtherwiseLane="true" index="85" hadOnlyOneElement="false" entity-id="e7e3e18b-0e7e-4761-84e3-c68a04de42ee">
+                    <lane isChoiceOtherwiseLane="true" index="85" hadOnlyOneElement="false" entity-id="74a53b42-3d5d-43fe-a997-65ebb5879b7f">
                         <pattern type="http://www.mulesoft.org/schema/mule/core/logger" name="Log SetupComplete Success" entity-id="Logger#16">
                             <graphicalData height="0" width="0" y="0" x="0"/>
                             <properties>
@@ -1113,7 +1195,7 @@
             </splitter>
         </lane>
     </flow>
-    <flow SubFlow="false" name="DAX-error-flow" entity-id="527b562d-609a-426f-a80e-3b13c8d6b082">
+    <flow SubFlow="false" name="DAX-error-flow" entity-id="ac4e2af9-cebb-48b8-a290-46980cd0f954">
         <properties>
             <property name="processingStrategy"/>
             <property name="processingStrategy2"/>
@@ -1179,7 +1261,7 @@
             </endpoint>
         </lane>
     </flow>
-    <flow SubFlow="false" name="DAX-retry-flow" entity-id="87ef6711-bbe8-42bf-9d3a-2d5ec460702a">
+    <flow SubFlow="false" name="DAX-retry-flow" entity-id="8ad68fbe-9e56-4055-ba6e-af66a0d43cdc">
         <properties>
             <property name="processingStrategy"/>
             <property name="processingStrategy2"/>
@@ -1189,7 +1271,7 @@
         </properties>
         <lane isChoiceOtherwiseLane="false" index="0" hadOnlyOneElement="false" entity-id="compartment-lane#14">
             <graphicalData height="0" width="0" y="0" x="0"/>
-            <endpoint message-exchange-pattern="OneWay" direction="Inbound" type="http://www.mulesoft.org/schema/mule/vm/endpoint" name="VM" entity-id="VM#20">
+            <endpoint message-exchange-pattern="OneWay" direction="Inbound" type="http://www.mulesoft.org/schema/mule/vm/endpoint" name="VM-retry" entity-id="VM#20">
                 <graphicalData height="0" width="0" y="0" x="0"/>
                 <properties>
                     <property name="businessEventsLabel"/>
@@ -1229,62 +1311,119 @@
             <splitter index="97" type="org.mule.tooling.ui.modules.core.pattern.cbr" name="Choice" entity-id="Choice#11">
                 <graphicalData height="0" width="0" y="0" x="0"/>
                 <properties>
-                    <property-collection name="fc86e8f1-49ef-444a-ad29-c67239a7814f">
+                    <property value="97" name=";INDEX"/>
+                    <property-collection name="c503881c-629a-43bb-9ca8-83abad9c5d5a">
                         <property value="" name="choice.expression"/>
                         <property-collection name="choice.attributes">
                             <property value="" name="expression"/>
                         </property-collection>
                     </property-collection>
-                    <property-collection name="8106fc6a-03d6-486d-8563-ae8db593373e">
-                        <property value="" name="choice.expression"/>
-                        <property-collection name="choice.attributes">
-                            <property value="" name="expression"/>
-                        </property-collection>
-                    </property-collection>
-                    <property-collection name="5cade332-e3e8-4853-93aa-5d26cfc2b31f">
-                        <property value="" name="choice.expression"/>
-                        <property-collection name="choice.attributes">
-                            <property value="" name="expression"/>
-                        </property-collection>
-                    </property-collection>
-                    <property-collection name="41092ac8-d2da-426c-8bfc-105d614f86d9">
-                        <property value="" name="choice.expression"/>
-                        <property-collection name="choice.attributes">
-                            <property value="" name="expression"/>
-                        </property-collection>
-                    </property-collection>
-                    <property-collection name="5c11b8db-5b19-4d41-8d96-c6e9b177f613">
-                        <property value="" name="choice.expression"/>
-                        <property-collection name="choice.attributes">
-                            <property value="" name="expression"/>
-                        </property-collection>
-                    </property-collection>
-                    <property-collection name="8aaa1bdd-ba4a-4497-b5e0-ef9dfe790b2e">
-                        <property value="" name="choice.expression"/>
-                        <property-collection name="choice.attributes">
-                            <property value="" name="expression"/>
-                        </property-collection>
-                    </property-collection>
-                    <property-collection name="427dce95-7ad8-46f4-a7ea-092e3ffd3e8a">
+                    <property-collection name="b4501803-4a68-40d5-a83c-6486859b4d8f">
                         <property value="true" name="choice.otherwise"/>
                         <property-collection name="choice.attributes"/>
                     </property-collection>
-                    <property-collection name="7e9c0c71-3be2-4981-be37-0c60d7b578a1">
+                    <property-collection name="4b601d25-17f0-4e1f-81e9-9ff8053b62d6">
                         <property value="" name="choice.expression"/>
                         <property-collection name="choice.attributes">
                             <property value="" name="expression"/>
                         </property-collection>
                     </property-collection>
-                    <property-collection name="7e52e9b1-0400-4652-ac5f-b05d6ec783c4">
+                    <property-collection name="1d64a7f9-4e11-4bb2-a09a-8ad4d5185734">
+                        <property value="" name="choice.expression"/>
+                        <property-collection name="choice.attributes">
+                            <property value="" name="expression"/>
+                        </property-collection>
+                    </property-collection>
+                    <property-collection name="6891578f-662f-47c5-8a00-b4a90de2d7ea">
+                        <property value="" name="choice.expression"/>
+                        <property-collection name="choice.attributes">
+                            <property value="" name="expression"/>
+                        </property-collection>
+                    </property-collection>
+                    <property-collection name="e1a1a84c-aa6b-442c-9229-cee56cc842ed">
+                        <property value="" name="choice.expression"/>
+                        <property-collection name="choice.attributes">
+                            <property value="" name="expression"/>
+                        </property-collection>
+                    </property-collection>
+                    <property-collection name="32476533-771b-4c00-bc81-281be8d61041">
+                        <property value="" name="choice.expression"/>
+                        <property-collection name="choice.attributes">
+                            <property value="" name="expression"/>
+                        </property-collection>
+                    </property-collection>
+                    <property-collection name="13d67f45-73ea-4269-908b-79e3319c631e">
+                        <property value="" name="choice.expression"/>
+                        <property-collection name="choice.attributes">
+                            <property value="" name="expression"/>
+                        </property-collection>
+                    </property-collection>
+                    <property-collection name="c89fbdda-0b7f-4633-ae37-d826a4ea9329">
                         <property value="" name="choice.expression"/>
                         <property-collection name="choice.attributes">
                             <property value="" name="expression"/>
                         </property-collection>
                     </property-collection>
                 </properties>
-                <pattern type="org.mule.tooling.ui.modules.core.pattern.cbr" name="Choice" entity-id="Choice#12"/>
+                <pattern type="org.mule.tooling.ui.modules.core.pattern.cbr" name="Choice" entity-id="Choice#12">
+                    <properties>
+                        <property value="97" name=";INDEX"/>
+                        <property-collection name="c503881c-629a-43bb-9ca8-83abad9c5d5a">
+                            <property value="" name="choice.expression"/>
+                            <property-collection name="choice.attributes">
+<property value="" name="expression"/>
+                            </property-collection>
+                        </property-collection>
+                        <property-collection name="b4501803-4a68-40d5-a83c-6486859b4d8f">
+                            <property value="true" name="choice.otherwise"/>
+                            <property-collection name="choice.attributes"/>
+                        </property-collection>
+                        <property-collection name="4b601d25-17f0-4e1f-81e9-9ff8053b62d6">
+                            <property value="" name="choice.expression"/>
+                            <property-collection name="choice.attributes">
+<property value="" name="expression"/>
+                            </property-collection>
+                        </property-collection>
+                        <property-collection name="1d64a7f9-4e11-4bb2-a09a-8ad4d5185734">
+                            <property value="" name="choice.expression"/>
+                            <property-collection name="choice.attributes">
+<property value="" name="expression"/>
+                            </property-collection>
+                        </property-collection>
+                        <property-collection name="6891578f-662f-47c5-8a00-b4a90de2d7ea">
+                            <property value="" name="choice.expression"/>
+                            <property-collection name="choice.attributes">
+<property value="" name="expression"/>
+                            </property-collection>
+                        </property-collection>
+                        <property-collection name="e1a1a84c-aa6b-442c-9229-cee56cc842ed">
+                            <property value="" name="choice.expression"/>
+                            <property-collection name="choice.attributes">
+<property value="" name="expression"/>
+                            </property-collection>
+                        </property-collection>
+                        <property-collection name="32476533-771b-4c00-bc81-281be8d61041">
+                            <property value="" name="choice.expression"/>
+                            <property-collection name="choice.attributes">
+<property value="" name="expression"/>
+                            </property-collection>
+                        </property-collection>
+                        <property-collection name="13d67f45-73ea-4269-908b-79e3319c631e">
+                            <property value="" name="choice.expression"/>
+                            <property-collection name="choice.attributes">
+<property value="" name="expression"/>
+                            </property-collection>
+                        </property-collection>
+                        <property-collection name="c89fbdda-0b7f-4633-ae37-d826a4ea9329">
+                            <property value="" name="choice.expression"/>
+                            <property-collection name="choice.attributes">
+<property value="" name="expression"/>
+                            </property-collection>
+                        </property-collection>
+                    </properties>
+                </pattern>
                 <compartment entity-id="compartment#11">
-                    <lane isChoiceOtherwiseLane="false" index="99" hadOnlyOneElement="false" entity-id="8106fc6a-03d6-486d-8563-ae8db593373e">
+                    <lane isChoiceOtherwiseLane="false" index="99" hadOnlyOneElement="false" entity-id="13d67f45-73ea-4269-908b-79e3319c631e">
                         <endpoint message-exchange-pattern="OneWay" direction="Outbound" type="http://www.mulesoft.org/schema/mule/vm/endpoint" name="VM-retry-step1" entity-id="VM#21">
                             <graphicalData height="0" width="0" y="0" x="0"/>
                             <properties>
@@ -1305,7 +1444,7 @@
                             </properties>
                         </endpoint>
                     </lane>
-                    <lane isChoiceOtherwiseLane="false" index="101" hadOnlyOneElement="false" entity-id="7e9c0c71-3be2-4981-be37-0c60d7b578a1">
+                    <lane isChoiceOtherwiseLane="false" index="101" hadOnlyOneElement="false" entity-id="6891578f-662f-47c5-8a00-b4a90de2d7ea">
                         <endpoint message-exchange-pattern="OneWay" direction="Outbound" type="http://www.mulesoft.org/schema/mule/vm/endpoint" name="VM-retry-step2" entity-id="VM#22">
                             <graphicalData height="0" width="0" y="0" x="0"/>
                             <properties>
@@ -1326,7 +1465,7 @@
                             </properties>
                         </endpoint>
                     </lane>
-                    <lane isChoiceOtherwiseLane="false" index="103" hadOnlyOneElement="false" entity-id="fc86e8f1-49ef-444a-ad29-c67239a7814f">
+                    <lane isChoiceOtherwiseLane="false" index="103" hadOnlyOneElement="false" entity-id="4b601d25-17f0-4e1f-81e9-9ff8053b62d6">
                         <endpoint message-exchange-pattern="OneWay" direction="Outbound" type="http://www.mulesoft.org/schema/mule/vm/endpoint" name="VM-retry-step3" entity-id="VM#23">
                             <graphicalData height="0" width="0" y="0" x="0"/>
                             <properties>
@@ -1347,7 +1486,7 @@
                             </properties>
                         </endpoint>
                     </lane>
-                    <lane isChoiceOtherwiseLane="false" index="105" hadOnlyOneElement="false" entity-id="5c11b8db-5b19-4d41-8d96-c6e9b177f613">
+                    <lane isChoiceOtherwiseLane="false" index="105" hadOnlyOneElement="false" entity-id="c503881c-629a-43bb-9ca8-83abad9c5d5a">
                         <endpoint message-exchange-pattern="OneWay" direction="Outbound" type="http://www.mulesoft.org/schema/mule/vm/endpoint" name="VM-retry-step4" entity-id="VM#24">
                             <graphicalData height="0" width="0" y="0" x="0"/>
                             <properties>
@@ -1368,7 +1507,7 @@
                             </properties>
                         </endpoint>
                     </lane>
-                    <lane isChoiceOtherwiseLane="false" index="107" hadOnlyOneElement="false" entity-id="8aaa1bdd-ba4a-4497-b5e0-ef9dfe790b2e">
+                    <lane isChoiceOtherwiseLane="false" index="107" hadOnlyOneElement="false" entity-id="1d64a7f9-4e11-4bb2-a09a-8ad4d5185734">
                         <endpoint message-exchange-pattern="OneWay" direction="Outbound" type="http://www.mulesoft.org/schema/mule/vm/endpoint" name="VM-retry-step5" entity-id="VM#25">
                             <graphicalData height="0" width="0" y="0" x="0"/>
                             <properties>
@@ -1389,7 +1528,7 @@
                             </properties>
                         </endpoint>
                     </lane>
-                    <lane isChoiceOtherwiseLane="false" index="109" hadOnlyOneElement="false" entity-id="5cade332-e3e8-4853-93aa-5d26cfc2b31f">
+                    <lane isChoiceOtherwiseLane="false" index="109" hadOnlyOneElement="false" entity-id="e1a1a84c-aa6b-442c-9229-cee56cc842ed">
                         <endpoint message-exchange-pattern="OneWay" direction="Outbound" type="http://www.mulesoft.org/schema/mule/vm/endpoint" name="VM-retry-step6" entity-id="VM#26">
                             <graphicalData height="0" width="0" y="0" x="0"/>
                             <properties>
@@ -1410,7 +1549,7 @@
                             </properties>
                         </endpoint>
                     </lane>
-                    <lane isChoiceOtherwiseLane="false" index="111" hadOnlyOneElement="false" entity-id="7e52e9b1-0400-4652-ac5f-b05d6ec783c4">
+                    <lane isChoiceOtherwiseLane="false" index="111" hadOnlyOneElement="false" entity-id="32476533-771b-4c00-bc81-281be8d61041">
                         <endpoint message-exchange-pattern="OneWay" direction="Outbound" type="http://www.mulesoft.org/schema/mule/vm/endpoint" name="VM-retry-step7" entity-id="VM#27">
                             <graphicalData height="0" width="0" y="0" x="0"/>
                             <properties>
@@ -1431,7 +1570,7 @@
                             </properties>
                         </endpoint>
                     </lane>
-                    <lane isChoiceOtherwiseLane="false" index="113" hadOnlyOneElement="false" entity-id="41092ac8-d2da-426c-8bfc-105d614f86d9">
+                    <lane isChoiceOtherwiseLane="false" index="113" hadOnlyOneElement="false" entity-id="c89fbdda-0b7f-4633-ae37-d826a4ea9329">
                         <endpoint message-exchange-pattern="OneWay" direction="Outbound" type="http://www.mulesoft.org/schema/mule/vm/endpoint" name="VM-retry-setupComplete" entity-id="VM#28">
                             <graphicalData height="0" width="0" y="0" x="0"/>
                             <properties>
@@ -1452,7 +1591,7 @@
                             </properties>
                         </endpoint>
                     </lane>
-                    <lane isChoiceOtherwiseLane="true" index="115" hadOnlyOneElement="false" entity-id="427dce95-7ad8-46f4-a7ea-092e3ffd3e8a">
+                    <lane isChoiceOtherwiseLane="true" index="115" hadOnlyOneElement="false" entity-id="b4501803-4a68-40d5-a83c-6486859b4d8f">
                         <endpoint message-exchange-pattern="OneWay" direction="Outbound" type="http://www.mulesoft.org/schema/mule/vm/endpoint" name="VM-retry-cleanup" entity-id="VM#29">
                             <graphicalData height="0" width="0" y="0" x="0"/>
                             <properties>
@@ -1477,7 +1616,7 @@
             </splitter>
         </lane>
     </flow>
-    <flow SubFlow="false" name="DAX-DLQ-flow" entity-id="aaded764-b410-47a0-9d51-8f9b56806e29">
+    <flow SubFlow="false" name="DAX-DLQ-flow" entity-id="a7253c76-3950-4e16-a49e-8d7177a6875c">
         <properties>
             <property name="processingStrategy"/>
             <property name="processingStrategy2"/>
@@ -1531,7 +1670,7 @@
             </pattern>
         </lane>
     </flow>
-    <flow SubFlow="false" name="DAX-cleanup-flow" entity-id="a92b5191-6a16-4999-8981-53e576bb2ab8">
+    <flow SubFlow="false" name="DAX-cleanup-flow" entity-id="04c5905c-df96-40a0-ad05-df64d9cb0cd9">
         <properties>
             <property name="processingStrategy"/>
             <property name="processingStrategy2"/>
@@ -1634,20 +1773,35 @@
             <splitter index="127" type="org.mule.tooling.ui.modules.core.pattern.cbr" name="Choice" entity-id="Choice#13">
                 <graphicalData height="0" width="0" y="0" x="0"/>
                 <properties>
-                    <property-collection name="67ab6c51-7283-4535-b527-b5a07dc1fa99">
-                        <property value="true" name="choice.otherwise"/>
-                        <property-collection name="choice.attributes"/>
-                    </property-collection>
-                    <property-collection name="aa717916-1723-4f9e-966c-f49a4d065b54">
+                    <property value="127" name=";INDEX"/>
+                    <property-collection name="c2f61f91-7e7b-4e05-88f3-17f176277348">
                         <property value="" name="choice.expression"/>
                         <property-collection name="choice.attributes">
                             <property value="" name="expression"/>
                         </property-collection>
                     </property-collection>
+                    <property-collection name="d1e36787-34d9-4cb2-9bcb-d978c9249814">
+                        <property value="true" name="choice.otherwise"/>
+                        <property-collection name="choice.attributes"/>
+                    </property-collection>
                 </properties>
-                <pattern type="org.mule.tooling.ui.modules.core.pattern.cbr" name="Choice" entity-id="Choice#14"/>
+                <pattern type="org.mule.tooling.ui.modules.core.pattern.cbr" name="Choice" entity-id="Choice#14">
+                    <properties>
+                        <property value="127" name=";INDEX"/>
+                        <property-collection name="c2f61f91-7e7b-4e05-88f3-17f176277348">
+                            <property value="" name="choice.expression"/>
+                            <property-collection name="choice.attributes">
+<property value="" name="expression"/>
+                            </property-collection>
+                        </property-collection>
+                        <property-collection name="d1e36787-34d9-4cb2-9bcb-d978c9249814">
+                            <property value="true" name="choice.otherwise"/>
+                            <property-collection name="choice.attributes"/>
+                        </property-collection>
+                    </properties>
+                </pattern>
                 <compartment entity-id="compartment#13">
-                    <lane isChoiceOtherwiseLane="false" index="129" hadOnlyOneElement="false" entity-id="aa717916-1723-4f9e-966c-f49a4d065b54">
+                    <lane isChoiceOtherwiseLane="false" index="129" hadOnlyOneElement="false" entity-id="c2f61f91-7e7b-4e05-88f3-17f176277348">
                         <pattern type="http://www.mulesoft.org/schema/mule/core/logger" name="CleanUp-failed" entity-id="Logger#21">
                             <graphicalData height="0" width="0" y="0" x="0"/>
                             <properties>
@@ -1676,20 +1830,35 @@
                         <splitter index="132" type="org.mule.tooling.ui.modules.core.pattern.cbr" name="Choice" entity-id="Choice#15">
                             <graphicalData height="0" width="0" y="0" x="0"/>
                             <properties>
-<property-collection name="ac3ef3a0-1dae-4c9a-a137-63aae598f621">
+<property value="132" name=";INDEX"/>
+<property-collection name="1333de8f-b62e-4b00-93a8-30f7e24e784c">
     <property value="true" name="choice.otherwise"/>
     <property-collection name="choice.attributes"/>
 </property-collection>
-<property-collection name="a3743b69-e72f-41e7-a0c0-0d6f54e35dfd">
+<property-collection name="0ad9c0c4-2258-4551-a8c1-e6881b5070c7">
     <property value="" name="choice.expression"/>
     <property-collection name="choice.attributes">
         <property value="" name="expression"/>
     </property-collection>
 </property-collection>
                             </properties>
-                            <pattern type="org.mule.tooling.ui.modules.core.pattern.cbr" name="Choice" entity-id="Choice#16"/>
+                            <pattern type="org.mule.tooling.ui.modules.core.pattern.cbr" name="Choice" entity-id="Choice#16">
+<properties>
+    <property value="132" name=";INDEX"/>
+    <property-collection name="1333de8f-b62e-4b00-93a8-30f7e24e784c">
+        <property value="true" name="choice.otherwise"/>
+        <property-collection name="choice.attributes"/>
+    </property-collection>
+    <property-collection name="0ad9c0c4-2258-4551-a8c1-e6881b5070c7">
+        <property value="" name="choice.expression"/>
+        <property-collection name="choice.attributes">
+            <property value="" name="expression"/>
+        </property-collection>
+    </property-collection>
+</properties>
+                            </pattern>
                             <compartment entity-id="compartment#14">
-<lane isChoiceOtherwiseLane="false" index="134" hadOnlyOneElement="false" entity-id="a3743b69-e72f-41e7-a0c0-0d6f54e35dfd">
+<lane isChoiceOtherwiseLane="false" index="134" hadOnlyOneElement="false" entity-id="0ad9c0c4-2258-4551-a8c1-e6881b5070c7">
     <pattern type="http://www.mulesoft.org/schema/mule/core/message-properties-transformer" name="set DaxStep=ABORT" entity-id="Message Properties#6">
         <graphicalData height="0" width="0" y="0" x="0"/>
         <properties>
@@ -1729,7 +1898,7 @@
         </properties>
     </endpoint>
 </lane>
-<lane isChoiceOtherwiseLane="true" index="138" hadOnlyOneElement="false" entity-id="ac3ef3a0-1dae-4c9a-a137-63aae598f621">
+<lane isChoiceOtherwiseLane="true" index="138" hadOnlyOneElement="false" entity-id="1333de8f-b62e-4b00-93a8-30f7e24e784c">
     <pattern type="http://www.mulesoft.org/schema/mule/core/message-properties-transformer" name="set DaxStep=RETRY" entity-id="Message Properties#7">
         <graphicalData height="0" width="0" y="0" x="0"/>
         <properties>
@@ -1781,7 +1950,7 @@
                             </compartment>
                         </splitter>
                     </lane>
-                    <lane isChoiceOtherwiseLane="true" index="143" hadOnlyOneElement="false" entity-id="67ab6c51-7283-4535-b527-b5a07dc1fa99">
+                    <lane isChoiceOtherwiseLane="true" index="143" hadOnlyOneElement="false" entity-id="d1e36787-34d9-4cb2-9bcb-d978c9249814">
                         <pattern type="http://www.mulesoft.org/schema/mule/core/logger" name="CleanUp-success" entity-id="Logger#23">
                             <graphicalData height="0" width="0" y="0" x="0"/>
                             <properties>
@@ -1824,7 +1993,7 @@
             </splitter>
         </lane>
     </flow>
-    <flow SubFlow="false" name="3PS-Callback" entity-id="092db343-471f-43d2-ab8a-d3a40d36d212">
+    <flow SubFlow="false" name="3PS-Callback" entity-id="63bf5a58-e236-4a27-8515-2d01735d574c">
         <properties>
             <property name="processingStrategy"/>
             <property name="processingStrategy2"/>
@@ -1992,20 +2161,35 @@
             <splitter index="157" type="org.mule.tooling.ui.modules.core.pattern.cbr" name="Choice" entity-id="Choice#17">
                 <graphicalData height="0" width="0" y="0" x="0"/>
                 <properties>
-                    <property-collection name="f94d13c1-609e-45ab-b003-2fb457178d85">
+                    <property value="157" name=";INDEX"/>
+                    <property-collection name="cc697696-21a9-47e5-ae16-6ea32c792623">
                         <property value="true" name="choice.otherwise"/>
                         <property-collection name="choice.attributes"/>
                     </property-collection>
-                    <property-collection name="4f76d93d-bb58-411e-a260-9b5f9ca5b608">
+                    <property-collection name="0ce340e5-e1ff-4889-a89f-01c69b924b84">
                         <property value="" name="choice.expression"/>
                         <property-collection name="choice.attributes">
                             <property value="" name="expression"/>
                         </property-collection>
                     </property-collection>
                 </properties>
-                <pattern type="org.mule.tooling.ui.modules.core.pattern.cbr" name="Choice" entity-id="Choice#18"/>
+                <pattern type="org.mule.tooling.ui.modules.core.pattern.cbr" name="Choice" entity-id="Choice#18">
+                    <properties>
+                        <property value="157" name=";INDEX"/>
+                        <property-collection name="cc697696-21a9-47e5-ae16-6ea32c792623">
+                            <property value="true" name="choice.otherwise"/>
+                            <property-collection name="choice.attributes"/>
+                        </property-collection>
+                        <property-collection name="0ce340e5-e1ff-4889-a89f-01c69b924b84">
+                            <property value="" name="choice.expression"/>
+                            <property-collection name="choice.attributes">
+<property value="" name="expression"/>
+                            </property-collection>
+                        </property-collection>
+                    </properties>
+                </pattern>
                 <compartment entity-id="compartment#17">
-                    <lane isChoiceOtherwiseLane="false" index="159" hadOnlyOneElement="false" entity-id="4f76d93d-bb58-411e-a260-9b5f9ca5b608">
+                    <lane isChoiceOtherwiseLane="false" index="159" hadOnlyOneElement="false" entity-id="0ce340e5-e1ff-4889-a89f-01c69b924b84">
                         <pattern type="http://www.mulesoft.org/schema/mule/core/logger" name="ERROR on 3PS Update" entity-id="Logger#27">
                             <graphicalData height="0" width="0" y="0" x="0"/>
                             <properties>
@@ -2035,7 +2219,7 @@
                             </properties>
                         </endpoint>
                     </lane>
-                    <lane isChoiceOtherwiseLane="true" index="162" hadOnlyOneElement="false" entity-id="f94d13c1-609e-45ab-b003-2fb457178d85">
+                    <lane isChoiceOtherwiseLane="true" index="162" hadOnlyOneElement="false" entity-id="cc697696-21a9-47e5-ae16-6ea32c792623">
                         <pattern type="http://www.mulesoft.org/schema/mule/core/logger" name="SUCCESS: Log Orchestration endTime" entity-id="Logger#28">
                             <graphicalData height="0" width="0" y="0" x="0"/>
                             <properties>
@@ -2057,7 +2241,7 @@
             </splitter>
         </lane>
     </flow>
-    <flow SubFlow="false" name="notification-service" entity-id="3629e8dd-90a0-4fb7-b4ba-1ce5afabc6b6">
+    <flow SubFlow="false" name="notification-service" entity-id="fc6229ee-54de-45a7-a39b-5f8b8855f350">
         <properties>
             <property name="processingStrategy"/>
             <property name="processingStrategy2"/>
@@ -2082,12 +2266,20 @@
                 <graphicalData height="0" width="0" y="0" x="0"/>
                 <properties>
                     <property name="bussinessEventsLabel"/>
+                    <property value="166" name=";INDEX"/>
                     <property value="166" name="auxiliary;index"/>
                     <property name="tracking:enable-default-events"/>
                 </properties>
-                <pattern type="org.mule.tooling.ui.modules.core.pattern.all" name="All" entity-id="All#2"/>
+                <pattern type="org.mule.tooling.ui.modules.core.pattern.all" name="All" entity-id="All#2">
+                    <properties>
+                        <property name="bussinessEventsLabel"/>
+                        <property value="166" name=";INDEX"/>
+                        <property value="166" name="auxiliary;index"/>
+                        <property name="tracking:enable-default-events"/>
+                    </properties>
+                </pattern>
                 <compartment entity-id="compartment#18">
-                    <lane isChoiceOtherwiseLane="false" index="0" hadOnlyOneElement="true" entity-id="7ac1835a-6b4f-4375-a203-436691f5f15d">
+                    <lane isChoiceOtherwiseLane="false" index="0" hadOnlyOneElement="true" entity-id="df6bb7c3-93ce-4abf-aaf1-5df2ed012273">
                         <endpoint message-exchange-pattern="OneWay" direction="Outbound" type="http://www.mulesoft.org/schema/mule/smtps/endpoint" name="SMTP" entity-id="SMTP#1">
                             <graphicalData height="0" width="0" y="0" x="0"/>
                             <properties>
@@ -2117,7 +2309,7 @@
                             </properties>
                         </endpoint>
                     </lane>
-                    <lane isChoiceOtherwiseLane="false" index="0" hadOnlyOneElement="true" entity-id="96ce8875-fe2a-4aff-93b7-3cdf830cbc2e">
+                    <lane isChoiceOtherwiseLane="false" index="0" hadOnlyOneElement="true" entity-id="141d371e-24f6-4d18-81f9-4e9dcb071f9e">
                         <pattern type="http://www.mulesoft.org/schema/mule/twilio/twilio-connector" name="Twilio" entity-id="Twilio#1">
                             <graphicalData height="0" width="0" y="0" x="0"/>
                             <properties>
@@ -2144,7 +2336,7 @@
             </splitter>
         </lane>
     </flow>
-    <flow SubFlow="false" name="get-data-from-3PS-flow" entity-id="0360c246-ee63-4e0c-87f3-9e59601b81e4">
+    <flow SubFlow="false" name="get-data-from-3PS-flow" entity-id="89e293d4-0998-49ea-8f43-92c2c9669fb0">
         <properties>
             <property name="processingStrategy"/>
             <property name="processingStrategy2"/>
@@ -2201,20 +2393,35 @@
             <splitter index="173" type="org.mule.tooling.ui.modules.core.pattern.cbr" name="Choice" entity-id="Choice#19">
                 <graphicalData height="0" width="0" y="0" x="0"/>
                 <properties>
-                    <property-collection name="fcda4238-f606-4878-8dfb-22fa80a5426c">
+                    <property value="173" name=";INDEX"/>
+                    <property-collection name="07cb6533-c312-4004-819e-383a6bad3134">
                         <property value="true" name="choice.otherwise"/>
                         <property-collection name="choice.attributes"/>
                     </property-collection>
-                    <property-collection name="108ade80-3d0a-400b-ade2-b51bedcbf378">
+                    <property-collection name="087c911c-e143-4035-b75c-e62fe46585e4">
                         <property value="" name="choice.expression"/>
                         <property-collection name="choice.attributes">
                             <property value="" name="expression"/>
                         </property-collection>
                     </property-collection>
                 </properties>
-                <pattern type="org.mule.tooling.ui.modules.core.pattern.cbr" name="Choice" entity-id="Choice#20"/>
+                <pattern type="org.mule.tooling.ui.modules.core.pattern.cbr" name="Choice" entity-id="Choice#20">
+                    <properties>
+                        <property value="173" name=";INDEX"/>
+                        <property-collection name="07cb6533-c312-4004-819e-383a6bad3134">
+                            <property value="true" name="choice.otherwise"/>
+                            <property-collection name="choice.attributes"/>
+                        </property-collection>
+                        <property-collection name="087c911c-e143-4035-b75c-e62fe46585e4">
+                            <property value="" name="choice.expression"/>
+                            <property-collection name="choice.attributes">
+<property value="" name="expression"/>
+                            </property-collection>
+                        </property-collection>
+                    </properties>
+                </pattern>
                 <compartment entity-id="compartment#19">
-                    <lane isChoiceOtherwiseLane="false" index="175" hadOnlyOneElement="false" entity-id="108ade80-3d0a-400b-ade2-b51bedcbf378">
+                    <lane isChoiceOtherwiseLane="false" index="175" hadOnlyOneElement="false" entity-id="087c911c-e143-4035-b75c-e62fe46585e4">
                         <pattern type="http://www.mulesoft.org/schema/mule/core/message-properties-transformer" name="Set 'ACK-INVALID-Schema" entity-id="Message Properties#8">
                             <graphicalData height="0" width="0" y="0" x="0"/>
                             <properties>
@@ -2228,7 +2435,7 @@
                             </properties>
                         </pattern>
                     </lane>
-                    <lane isChoiceOtherwiseLane="true" index="177" hadOnlyOneElement="false" entity-id="fcda4238-f606-4878-8dfb-22fa80a5426c">
+                    <lane isChoiceOtherwiseLane="true" index="177" hadOnlyOneElement="false" entity-id="07cb6533-c312-4004-819e-383a6bad3134">
                         <pattern type="http://www.mulesoft.org/schema/mule/core/message-properties-transformer" name="Set 'ACK-GOOD'" entity-id="Message Properties#9">
                             <graphicalData height="0" width="0" y="0" x="0"/>
                             <properties>
@@ -2271,7 +2478,7 @@
             </pattern>
         </lane>
     </flow>
-    <flow SubFlow="false" name="data-transformation-flow" entity-id="4e30f8c1-a94f-4a47-9adb-b3763c2d63f1">
+    <flow SubFlow="false" name="data-transformation-flow" entity-id="40da0a8b-e940-4b4b-8b56-383a937ce022">
         <properties>
             <property name="processingStrategy"/>
             <property name="processingStrategy2"/>
@@ -2321,20 +2528,35 @@
             <splitter index="184" type="org.mule.tooling.ui.modules.core.pattern.cbr" name="Choice" entity-id="Choice#21">
                 <graphicalData height="0" width="0" y="0" x="0"/>
                 <properties>
-                    <property-collection name="f964afa3-d6d2-4a40-ad6b-b86a302f4974">
+                    <property value="184" name=";INDEX"/>
+                    <property-collection name="be8a2591-af35-4506-b5c6-53ae8f30ca5a">
+                        <property value="true" name="choice.otherwise"/>
+                        <property-collection name="choice.attributes"/>
+                    </property-collection>
+                    <property-collection name="d3cf3819-6273-4925-885d-c7d63e97ecee">
                         <property value="" name="choice.expression"/>
                         <property-collection name="choice.attributes">
                             <property value="" name="expression"/>
                         </property-collection>
                     </property-collection>
-                    <property-collection name="a29a4e92-6b0f-4375-96ce-3dda4cfbd9f0">
-                        <property value="true" name="choice.otherwise"/>
-                        <property-collection name="choice.attributes"/>
-                    </property-collection>
                 </properties>
-                <pattern type="org.mule.tooling.ui.modules.core.pattern.cbr" name="Choice" entity-id="Choice#22"/>
+                <pattern type="org.mule.tooling.ui.modules.core.pattern.cbr" name="Choice" entity-id="Choice#22">
+                    <properties>
+                        <property value="184" name=";INDEX"/>
+                        <property-collection name="be8a2591-af35-4506-b5c6-53ae8f30ca5a">
+                            <property value="true" name="choice.otherwise"/>
+                            <property-collection name="choice.attributes"/>
+                        </property-collection>
+                        <property-collection name="d3cf3819-6273-4925-885d-c7d63e97ecee">
+                            <property value="" name="choice.expression"/>
+                            <property-collection name="choice.attributes">
+<property value="" name="expression"/>
+                            </property-collection>
+                        </property-collection>
+                    </properties>
+                </pattern>
                 <compartment entity-id="compartment#20">
-                    <lane isChoiceOtherwiseLane="false" index="186" hadOnlyOneElement="false" entity-id="f964afa3-d6d2-4a40-ad6b-b86a302f4974">
+                    <lane isChoiceOtherwiseLane="false" index="186" hadOnlyOneElement="false" entity-id="d3cf3819-6273-4925-885d-c7d63e97ecee">
                         <pattern type="http://www.mulesoft.org/schema/mule/core/logger" name="Log 'Already in DAX'" entity-id="Logger#29">
                             <graphicalData height="0" width="0" y="0" x="0"/>
                             <properties>
@@ -2388,7 +2610,7 @@
                             </properties>
                         </endpoint>
                     </lane>
-                    <lane isChoiceOtherwiseLane="true" index="191" hadOnlyOneElement="false" entity-id="a29a4e92-6b0f-4375-96ce-3dda4cfbd9f0">
+                    <lane isChoiceOtherwiseLane="true" index="191" hadOnlyOneElement="false" entity-id="be8a2591-af35-4506-b5c6-53ae8f30ca5a">
                         <endpoint message-exchange-pattern="OneWay" direction="Outbound" type="http://www.mulesoft.org/schema/mule/vm/endpoint" name="VM-continue" entity-id="VM#41">
                             <graphicalData height="0" width="0" y="0" x="0"/>
                             <properties>

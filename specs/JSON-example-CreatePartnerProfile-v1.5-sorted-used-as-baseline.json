@@ -1,0 +1,124 @@
+{
+   bankInformation: {},
+   cardProduction: {},
+   company: {
+      companyAddressLine1: '1234 Amador Dr.',
+      companyCity: 'Dublin',
+      companyIsFranchise: false,
+      companyLegalName: 'Donuts LLC',
+      companyMerchantCategoryCode: '4567',
+      companyPrimaryContactBusinessTitle: 'Sole Proprietor',
+      companyPrimaryContactEmail: 'abc@abc.com',
+      companyPrimaryContactFirstName: 'Test',
+      companyPrimaryContactLastName: 'User',
+      companyPrimaryPhoneNumber: ' 925-925-1234',
+      companyState: 'CA',
+      companyWebSiteURL: 'www.donuts.com',
+      companyZipPostalCode: '94568',
+      legalEntityStateOfIncorporation: 'CA'
+   },
+   contractInformation: {
+      contractCPAType: 'GROCERY',
+      contractDistributionCommision: '10%',
+      contractProgramManagementFee: '5%',
+      contractTerm: '2 years',
+      nameOfSigner: 'Test User',
+      title: 'Sole Proprietor'
+   },
+   cpDivision: {
+      companyDivisionBrandName: 'donuts',
+      companyIsInStoreRedemptionAvailable: true,
+      companyIsOnlineStoreRedemptionAvailable: false,
+      divisionAccountType: 'Gift Card',
+      divisionCardNumberLabel: 'Card #',
+      divisionCardPinLocation: 'Front',
+      divisionCardPinType: 'Printed',
+      divisionIsBarCodeScanSupported: false
+   },
+   createdTimestamp: '2014-03-26T22:12:54.514+0000',
+   creatorId: 'SF0TJQDX2XSLKDAMA062J373LW',
+   customerStore: {},
+   eGiftProductInformation: {
+      egiftRedemptionInformation: 'null null'
+   },
+   entityId: '94QGMK5KV5ABPYP5A7X4KC32JR',
+   giftCardSupport: {},
+   iid: {
+      iidActivationType: 'Store',
+      iidCaseCount: '1',
+      iidLanguage: 'English',
+      iidPackSize: '1'
+   },
+   invoicing: {},
+   onboardWorkflow: {
+      currentStage: 'DRAFT'
+   },
+   partnerInformation: {},
+   processorInformation: {},
+   productInformation: {
+      isProductDenominationVariable: false,
+      productIsMulticard: false,
+      productIsSpecificToDP: 'No',
+      productNewUPCReasonCode: 'New Program',
+      productOwnershipType: 'Non-owned',
+      productTheme: 'NA'
+   },
+   programInformation: {},
+   serviceNow: {},
+   source: {
+      isTest: false,
+      partnerProfileSource: 'PARTNER_SERVICE_PORTAL'
+   },
+   tracsConfiguration: {
+      tracsBasis: 'Percentage',
+      tracsCheckReferral: 'Yes',
+      tracsContractType: 'Buy',
+      tracsDetailSREAdjustmentACHDeliveryChannel: 'Email',
+      tracsDetailSRECutoffTime: '23:59:59',
+      tracsDetailSREFrequency: 'DOW /DOW',
+      tracsDetailSREReconciliationFrequency: 'Weekly',
+      tracsDetailSREReconciliationType: '',
+      tracsDetailSRESettlementFrequency: 'Weekly',
+      tracsDetailSREStatementDeliveryChannel: 'Email',
+      tracsDetailSREStatementReconFormat: 'Dom Dr/CR / Select Format',
+      tracsDetailSRETimeZone: '(GMT-07:00) MST',
+      tracsGeography: 'USA TAX',
+      tracsGetsPays: 'Gets',
+      tracsProductScope: '3',
+      tracsReferralBasis: 'Percentage',
+      tracsReferralCommPercentage: '5%',
+      tracsReferralContractType: 'Gets',
+      tracsReferralGetsPays: 'Pays',
+      tracsReferralQualifierADS: '5067',
+      tracsReferralSetupStatus: 'Production',
+      tracsReferralStakeholder: '12446',
+      tracsSREClearingFiltersBuySellType: 'Buy Side',
+      tracsSREClearingFiltersPayload: 'Principal/Comm',
+      tracsSREFundsTransferAccountingType: 'AP',
+      tracsSREFundsTransferPaymentMethod: 'On Hold',
+      tracsSREFundsTransferStakeholderType: 'Issuer',
+      tracsSREReconciliationFileFormat: 'Stnd NW w/o Sum(csv)',
+      tracsSetupStatus: 'Production',
+      tracsTopSRECurrency: 'US Dollar',
+      tracsTopSREExternalReferenceId: 'Hyperlocal',
+      tracsTopSREFTStatus: 'NonFT'
+   },
+   updatedTimestamp: '2014-03-26T22:12:56.954+0000',
+   updaterId: 'SF0TJQDX2XSLKDAMA062J373LW',
+   vendorInformation: {
+      vendorAddressBookType: 'Remit to',
+      vendorGroup: 'GC',
+      vendorIsMethodOfPaymentStopped: 'No',
+      vendorNameFor1099: 'Donuts LLC',
+      vendorPaymentMode: 'NOPAY',
+      vendorPaymentTermsId: 'N21',
+      vendorPrimary: 'Checked',
+      vendorPublic: 'Checked',
+      vendorTax1099Reports: '1099k',
+      wasVendorW9Received: 'Yes'
+   },
+   w9Information: {
+      receivedConsentForElectronicSignature: false,
+      taxIdNumber: '555-55-5555'
+   }
+}

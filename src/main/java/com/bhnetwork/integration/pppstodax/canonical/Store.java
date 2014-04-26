@@ -1,43 +1,43 @@
 package com.bhnetwork.integration.pppstodax.canonical;
 
+/**
+ * 
+ * BHN Integration canonical model for Store (aka customer store)
+ * per spec 3.3, doc ref: MasterDataGapAnalysisGROUP 3PS v 3_3 .xlsx 
+ * 
+ * @author Stephane Rata - Got SOA?
+ *
+ */
 public class Store {
-	private String AccountNum
-	private String Name
-	private String Address
-	private String Address 2
-	private String Phone
-	private String CustGroup
-	private String Currency
-	private String Blocked
-	private String Dimension
-	private String DimensionPartnerActivityCode
-	private String DimensionRegionCode
-	private String PriceGroup
-	private String CountryRegionId
-	private String ZipCode
-	private String State
-	private String County
-	private String URL
-	private String NameAlias
-	private String LanguageId
-	private String City
-	private String Street
-	private String PartyType
-	private String SyncEntityId
-	private String SyncVersion
-	private String PartyCountry
-	private String PartyState
-	private String bhnCompanyCode
-	private String bhnDivisionCode
-	private String bhnCustLevel
-	private String bhnStoreCode
-	private String jsSearchText
-	private String bhnGUID
-	private String modifiedDateTime
-	private String modifiedBy
-	private String createdDateTime
-	private String createdBy
-	private String dataAreaId
-	private String recVersion
-	private String RecId
+	    // bhn fields are DAX specific and may not need to be exposed in the json
+		private	String	AccountNum;
+		private	String	bhnCompanyCode;
+		private	String	bhnDivisionCode;
+		private	String	bhnGUID;
+		private	String	bhnPartyType;
+		private	String	bhnSyncEntityId;
+		private	String	bhnSyncVersion;
+		private	String	companyPhysicalStoreAddressLine1;
+		private	String	companyPhysicalStoreCountry;
+		private	String	County;
+		private	String	Currency;
+		private	Boolean	isSearchText;
+		private	Boolean	isStoreBlocked;
+		private	String	NameAlias;
+		private	String	productLanguage;
+		private	String	storeBHNCustLevel;
+		private	String	storeBHNStoreCode;
+		private	String	storeChannelDimension;
+		private	String	storeContactPhoneNumber;
+		private	String	storeCountryRegionId;
+		private	String	storeCustGroup;
+		private	String	storeDimensionPAC;
+		private	String	storeDimensionRegion;
+		private	String	storePhysicalStoreAddressLine1;
+		private	String	storePhysicalStoreAddressLine2;
+		private	String	storePhysicalStoreCity;
+		private	String	storePhysicalStoreName;
+		private	String	storePhysicalStorePostalCode;
+		private	String	storePhysicalStoreState;
+		private	String	storePriceToleranceGroup;
 }

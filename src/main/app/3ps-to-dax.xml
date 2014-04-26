@@ -137,36 +137,36 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
         <vm:outbound-endpoint exchange-pattern="one-way" doc:name="VM-DAX-cleanup" path="Q.cleanup"/>
     </flow>
     <flow name="DAX-retry-flow" doc:name="DAX-retry-flow">
-        <vm:inbound-endpoint exchange-pattern="one-way" responseTimeout="" doc:name="VM"/>
+        <vm:inbound-endpoint exchange-pattern="one-way"  doc:name="VM-retry"/>
         <logger level="INFO" doc:name="TO BE IMPLEMENTED..."/>
         <logger level="INFO" doc:name="determine what step is to be retried"/>
         <choice doc:name="Choice">    
             <when expression="">
-                <vm:outbound-endpoint exchange-pattern="one-way" responseTimeout="" doc:name="VM-retry-step1"/>
+                <vm:outbound-endpoint exchange-pattern="one-way"  doc:name="VM-retry-step1"/>
             </when>            
             <when expression="">
-                <vm:outbound-endpoint exchange-pattern="one-way" responseTimeout="" doc:name="VM-retry-step2"/>
+                <vm:outbound-endpoint exchange-pattern="one-way"  doc:name="VM-retry-step2"/>
             </when>
             <when expression="">
-                <vm:outbound-endpoint exchange-pattern="one-way" responseTimeout="" doc:name="VM-retry-step3"/>
+                <vm:outbound-endpoint exchange-pattern="one-way"  doc:name="VM-retry-step3"/>
             </when>
             <when expression="">
-                <vm:outbound-endpoint exchange-pattern="one-way" responseTimeout="" doc:name="VM-retry-step4"/>
+                <vm:outbound-endpoint exchange-pattern="one-way"  doc:name="VM-retry-step4"/>
             </when>
             <when expression="">
-                <vm:outbound-endpoint exchange-pattern="one-way" responseTimeout="" doc:name="VM-retry-step5"/>
+                <vm:outbound-endpoint exchange-pattern="one-way"  doc:name="VM-retry-step5"/>
             </when>
             <when expression="">
-                <vm:outbound-endpoint exchange-pattern="one-way" responseTimeout="" doc:name="VM-retry-step6"/>
+                <vm:outbound-endpoint exchange-pattern="one-way"  doc:name="VM-retry-step6"/>
             </when>
             <when expression="">
-                <vm:outbound-endpoint exchange-pattern="one-way" responseTimeout="" doc:name="VM-retry-step7"/>
+                <vm:outbound-endpoint exchange-pattern="one-way"  doc:name="VM-retry-step7"/>
             </when>
             <when expression="">
-                <vm:outbound-endpoint exchange-pattern="one-way" responseTimeout="" doc:name="VM-retry-setupComplete"/>
+                <vm:outbound-endpoint exchange-pattern="one-way"  doc:name="VM-retry-setupComplete"/>
             </when>
             <otherwise>
-                <vm:outbound-endpoint exchange-pattern="one-way" responseTimeout="" doc:name="VM-retry-cleanup"/>
+                <vm:outbound-endpoint exchange-pattern="one-way"  doc:name="VM-retry-cleanup"/>
             </otherwise>
         </choice>
     </flow>

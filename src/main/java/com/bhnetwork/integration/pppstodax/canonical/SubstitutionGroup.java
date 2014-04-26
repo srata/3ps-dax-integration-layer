@@ -1,20 +1,26 @@
 package com.bhnetwork.integration.pppstodax.canonical;
 
+/**
+ * 
+ * BHN Integration canonical model for Substitution Group
+ * per spec 3.3, doc ref: MasterDataGapAnalysisGROUP 3PS v 3_3 .xlsx 
+ * 
+ * @author Stephane Rata - Got SOA?
+ *
+ */
+
 public class SubstitutionGroup {
-	// from DAX
-	private String BrandDenomDescription
-	private String BrandRecId
-	private String SubGroupId
-	private String POGCategory1
-	private String POGCategory2
-	private String POGCategory3
-	private String POGDimension
-	private String Division Code
-	private String ShipperUPC
-	private String CardDisplayDesc
-	private String PortalDisplayName
-	private String GUID
-	private String dataAreaId
-	private String recVersion
-	private String RecId
+	
+	private	String	brandDenomDescription;
+	private	String	brandRecId;
+	private	String	cardDisplayDesc;
+	private	String	category1POG;
+	private	String	category2POG;
+	private	String	category3POG;
+	private	String	dimensionPOG;
+	private	String	divisionCode;
+	private	String	guid;
+	private	String	portalDisplayName;
+	private	String	shipperUPC;
+	private	String	subGroupId;
 }
